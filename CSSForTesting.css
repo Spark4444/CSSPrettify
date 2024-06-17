@@ -1,0 +1,16 @@
+alement{
+    color: blue;
+    background: yellow;
+}
+element2{
+    color:yellow;
+    background:blue;
+}
+.blement3{
+    /*comment*/
+    display: inline;
+    color:yellow;
+    background:blue;
+}
+
+element4{color:yellow;/*comment*/background:blue;}
