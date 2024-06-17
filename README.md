@@ -52,7 +52,7 @@ element2{
     color: yellow;
 }
 
-blement3{
+.blement3{
     background: blue;
     color: yellow;
     display: inline;
