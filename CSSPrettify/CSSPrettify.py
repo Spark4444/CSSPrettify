@@ -13,8 +13,20 @@ def openCssFile(checkState, text2, entry):
             # Read and save the new CSS file
             cssContent = file.read()
 
+            # Modified regular expression pattern to match at-rules
+            pattern = r'(@[\w-]+[^{]+{[^{}]*}|@[\w-]+[^{]+\{[\s\S]+?\}\s*\})'
+
+            # Find all at-rules in the CSS code
+            atRules = re.findall(pattern, cssContent)
+
+            # Sort the at-rules alphabetically by the at-rule name
+            sortedAtRules = sorted(atRules, key=lambda x: re.match(r'@[\w-]+', x).group())
+
+            # Remove found at-rules from the original CSS string
+            cssContent = re.sub(pattern, '', cssContent)
+
             # Regular expression pattern to match element names and their rules, ignoring comments
-            pattern = r"([.\w]+)\s*\{(?:/\*.*?\*/\s*)*([^\}]+)\}"
+            pattern = r"([.\w*]+)\s*\{(?:/\*.*?\*/\s*)*([^\}]+)\}"
 
             # Find all matches of the pattern in the cssContent
             matches = re.findall(pattern, cssContent)
@@ -41,12 +53,16 @@ def openCssFile(checkState, text2, entry):
             # New CSS structure varaible
             cssStructure = ""
 
-            # Generate the CSS structure
+            # Generate the CSS structure for regular rules
             for element, rules in zip(elementArray, elementRules):
                 cssStructure += f"{element}{{\n"
                 for rule in rules:
                     cssStructure += f"    {rule};\n"
                 cssStructure += "}\n\n"
+
+            # Append the sorted at-rules to the end of the CSS structure
+            for atRule in sortedAtRules:
+                cssStructure += f"{atRule}\n\n"
 
         # Save the new CSS file in the same directory with an "Edited" added at the end
         newFilename = f"{os.path.splitext(filepath)[0]}Edited.css"
