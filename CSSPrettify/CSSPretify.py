@@ -14,7 +14,7 @@ def openCssFile(checkState, text2, entry):
             cssContent = file.read()
 
             # Regular expression pattern to match element names and their rules, ignoring comments
-            pattern = r"(\w+)\s*\{(?:/\*.*?\*/\s*)*([^\}]+)\}"
+            pattern = r"([.\w]+)\s*\{(?:/\*.*?\*/\s*)*([^\}]+)\}"
 
             # Find all matches of the pattern in the cssContent
             matches = re.findall(pattern, cssContent)
@@ -62,8 +62,8 @@ def main():
     # Window initalization
     root = tk.Tk()
     root.configure(bg="black")
-    root.title("CSS Pretify")
-    root.iconbitmap("img/cssIcon.ico")
+    root.title("CSS Prettify")
+    root.iconbitmap(r"CSSPrettify\dist\main\img\cssIcon.ico")
     root.geometry("500x300")
     root.minsize(500, 300) 
 

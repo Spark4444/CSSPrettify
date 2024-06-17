@@ -1,7 +1,7 @@
 # CSS Prettify
 
 This app sorts `CSS` code in alphabetical order to make it look pretty.
-After choosing the `CSS` code using the button, it will edit it and save it into the same directory with `Edited` added to the file name.
+After choosing the `CSS` code using the button, it will edit it and save it into the same directory with `Edited` added to the file name. If you don't need the `CSSPretify.py` file you can delete it after downloading the project, it's not needed for the `CSSPretify.exe` to work.
 I can't fix it, but this prettiefier removes all comments from your `CSS` after editing it.
 
 ## Instalation
