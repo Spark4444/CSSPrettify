@@ -82,15 +82,22 @@ def openCssFile(checkState, text3, entry2):
             entry2.delete(0, tk.END)
             entry2.insert(0, newFilename)
             entry2.config(state="readonly", cursor="xterm")
+            text3.place(anchor="s", relx=0.5, rely=0.95)
+            entry2.place(anchor="s", relx=0.5, rely=1)
 
 # Function for copying the CSS code
-def copyToClipboard(entry, checkState, text3, root):
+def copyToClipboard(entry, checkState, text3, entry2, root):
     cssCode = entry.get()
 
     # get the CSS structure from the editCss function
     cssStructure = editCss(cssCode, checkState)
     pyperclip.copy(cssStructure)
     text3.config(text="Copied your new CSS to clipboard.")
+    text3.place(anchor="s", relx=0.5, rely=1)
+    entry2.config(state="normal")
+    entry2.delete(0, tk.END)
+    entry2.config(state="readonly", cursor="arrow")
+    entry2.place(anchor="s", relx=0.5, rely=0.92)
     entry.delete(0, tk.END) 
     root.focus()
 
@@ -130,7 +137,7 @@ def main():
     customFont = font.Font(family="Helvetica", size=10)
     borderFrame = tk.Frame(root, background="white", bd=1, height=30 , width=115)
     
-    text = tk.Label(root, bg="black", fg="white", font=customFont, text="Note that this pretifier removes all comments from your CSS.")
+    text = tk.Label(root, bg="black", fg="white", font=customFont, text="Note that this prettifier removes all comments from your CSS.")
     text.place(anchor="n", relx=0.5)
 
     openButton = tk.Button(borderFrame, activebackground="white", activeforeground="black", bg="black", command=lambda: openCssFile(checkState, text3, entry2), cursor="hand2", fg="white", font=customFont, highlightthickness=0, relief="flat", text="Select a CSS file")
@@ -155,7 +162,7 @@ def main():
 
     # Binds
     root.bind("<1>", lambda event: defocus(event, entry, entry2))
-    entry.bind("<Return>", lambda event: copyToClipboard(entry, checkState, text3, root))
+    entry.bind("<Return>", lambda event: copyToClipboard(entry, checkState, text3, entry2, root))
     entry.bind("<FocusIn>", lambda event: onEntryClick(entry, defaultText))
     entry.bind("<FocusOut>", lambda event: onFocusout(entry, defaultText))
 
