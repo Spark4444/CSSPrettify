@@ -21,15 +21,21 @@ def editCss(code, checkState):
     # Remove found at-rules from the original CSS string
     code = re.sub(pattern, "", code)
 
-    # Regular expression pattern to match element names and their rules, ignoring comments
-    pattern = r"([.#\w*]+)\s*\{(?:/\*.*?\*/\s*)*([^\}]+)\}"
+    # Regular expression pattern to match CSS rules (ignoring comments)
+    pattern = r"\/\*.*?\*\/|([^{}\/]+)(?=\{)"
 
     # Find all matches of the pattern in the CSS code
-    matches = re.findall(pattern, code)
+    matches = re.findall(pattern, code, re.DOTALL)
+
+    # Regular expression pattern to match element names and their rules, ignoring comments
+    pattern2 = r"(?<!\/\*[^}]*)(\{[^}]+\})"
+
+    # Find all matches of the pattern in the CSS code
+    matches2 = re.findall(pattern2, code, re.DOTALL)
 
     # Extract element names and rules into separate arrays
-    elementArray = [match[0] for match in matches]
-    elementRules = [re.sub(r"/\*.*?\*/", "", match[1]).replace("\n", "").split(";")[:-1] for match in matches]
+    elementArray = [match.strip() for match in matches if match.strip()]
+    elementRules = [re.sub(r"/\*.*?\*/", "", match[1]).replace("\n", "").split(";")[:-1] for match in matches2]
 
     # Clean up whitespace from the rules
     elementRules = [[rule.strip() for rule in rules] for rules in elementRules]
