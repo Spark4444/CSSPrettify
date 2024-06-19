@@ -66,7 +66,7 @@ element4{
 
 ## Usage
 
-* To open the app, open the `CSSPretify.exe` executable located in `CSSPretify/dist/main/`
+* To open the app, open the `CSSPretiyfy.exe` executable located in `CSSPretyify/dist/CSSPrettify/`
 * `Checkbox Sort element names in alphabetical order` sorts all the element names in alphabetical order if checked, like this:
 
 #### before:
