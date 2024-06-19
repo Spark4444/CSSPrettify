@@ -8,55 +8,96 @@ from tkinterdnd2 import DND_FILES, TkinterDnD
 
 # Function to edit the CSS code
 def editCss(code, checkState):
+    # Remove all comments from CSS
+    cleanedCss = re.sub(r"/\*.*?\*/", "", code, flags=re.DOTALL)
 
     # Modified regular expression pattern to match at-rules
     pattern = r"(@[\w-]+[^{]+{[^{}]*}|@[\w-]+[^{]+\{[\s\S]+?\}\s*\})"
 
     # Find all at-rules in the CSS code
-    atRules = re.findall(pattern, code)
+    atRules = re.findall(pattern, cleanedCss)
 
     # Sort the at-rules alphabetically by the at-rule name
     sortedAtRules = sorted(atRules, key=lambda x: re.match(r"@[\w-]+", x).group())
 
     # Remove found at-rules from the original CSS string
-    code = re.sub(pattern, "", code)
+    cleanedCss = re.sub(pattern, "", cleanedCss)
 
-    # Regular expression pattern to match CSS rules (ignoring comments)
-    pattern = r"\/\*.*?\*\/|([^{}\/]+)(?=\{)"
 
-    # Find all matches of the pattern in the CSS code
-    matches = re.findall(pattern, code, re.DOTALL)
 
-    # Regular expression pattern to match element names and their rules, ignoring comments
-    pattern2 = r"(?<!\/\*[^}]*)(\{[^}]+\})"
+    #RULES SELECTION    
+    # Regular expresion to select anything inside { }
+    curlyBracketsPattern = r"\{([^}]+)\}"
 
     # Find all matches of the pattern in the CSS code
-    matches2 = re.findall(pattern2, code, re.DOTALL)
+    matches = re.findall(curlyBracketsPattern, cleanedCss)
 
-    # Extract element names and rules into separate arrays
-    elementArray = [match.strip() for match in matches if match.strip()]
-    elementRules = [re.sub(r"/\*.*?\*/", "", match[1]).replace("\n", "").split(";")[:-1] for match in matches2]
+    # Initialize an empty list to store the rules
+    rules = []
 
-    # Clean up whitespace from the rules
-    elementRules = [[rule.strip() for rule in rules] for rules in elementRules]
+    # Process each match
+    for match in matches:
+        # Split the match by semicolon to separate ruleName and ruleParameter
+        parts = match.split(";")
+        for part in parts:
+            # Split each part by colon to get ruleName and ruleParameter
+            ruleParts = part.split(":")
+            if len(ruleParts) == 2:
+                ruleName, ruleParameter = ruleParts
+                # Remove any leading/trailing spaces
+                ruleName = ruleName.strip()
+                ruleParameter = ruleParameter.strip()
+                # Append the rule as a list [ruleName, ruleParameter] to the "rules" list
+                rules.append([ruleName, ruleParameter+";"])
+
+    # Sort rules names in alphabetical order
+    sortedRules = sorted(rules, key=lambda x: x[0])
+
+
+    #NAME SELECTION 
+    # Initialize an empty list to store the element names
+    elementNames = []
+
+    # Other varaibles
+    insideBraces = False
+    currentWord = ""
+
+    # Select all the content outside of the curly braces
+    for char in cleanedCss:
+        if char == "{":
+            insideBraces = True
+        elif char == "}":
+            insideBraces = False
+            if currentWord:
+                # Append the element name [elementName] to the "elementNames" list while removing any leading/trailing spaces
+                elementNames.append(currentWord.strip())
+            currentWord = ""
+        elif not insideBraces:
+            currentWord += char
+
+    if checkState.get():
+        elementNames = sorted(elementNames)
+
+    print(elementNames)
+    print(rules)
 
     # New CSS structure variable
-    cssStructure = []
+    # cssStructure = []
 
     # Generate the CSS structure for regular rules
-    cssStructure = ""
-    for element, rules in zip(elementArray, elementRules):
-        cssStructure += f"{element} {{\n"
-        for rule in rules:
-            rule_name, rule_value = rule.split(":")
-            cssStructure += f"    {rule_name.strip()}: {rule_value.strip()};\n"
-        cssStructure += "}\n\n"
+    # cssStructure = ""
+    # for element, rules in zip(elementArray, elementRules):
+    #     cssStructure += f"{element} {{\n"
+    #     for rule in rules:
+    #         rule_name, rule_value = rule.split(":")
+    #         cssStructure += f"    {rule_name.strip()}: {rule_value.strip()};\n"
+    #     cssStructure += "}\n\n"
 
     # Append the sorted at-rules to the end of the CSS structure
-    for atRule in sortedAtRules:
-        cssStructure += f"{atRule}\n\n"
+    # for atRule in sortedAtRules:
+    #     cssStructure += f"{atRule}\n\n"
 
-    return cssStructure
+    # return cssStructure
 
 # Function for opening a CSS files and then editing it
 def openCssFile(checkState, text3, entry2):
@@ -72,7 +113,7 @@ def openCssFile(checkState, text3, entry2):
         # Save the new CSS file in the same directory with an "Edited" added at the end
         newFilename = f"{os.path.splitext(filePath)[0]}Edited.css"
         with open(newFilename, "w") as file:
-            file.write(cssStructure)
+            # file.write(cssStructure)
             text3.config(text="Edited CSS file saved to:")
             text3.place(anchor="s", relx=0.5, rely=0.95)
             entry2.config(state="normal")
