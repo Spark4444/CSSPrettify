@@ -163,7 +163,7 @@ def main():
     root = TkinterDnD.Tk()
     root.configure(bg="black")
     root.title("CSS Prettify")
-    root.iconbitmap(r"CSSPrettify\dist\main\img\cssIcon.ico")
+    root.iconbitmap(r"dist\CSSPrettify\img\cssIcon.ico")
     root.geometry("500x300")
     root.minsize(500, 300) 
     root.resizable(False, False)
