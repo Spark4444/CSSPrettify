@@ -22,37 +22,28 @@ def editCss(code, checkState):
     code = re.sub(pattern, "", code)
 
     # Regular expression pattern to match element names and their rules, ignoring comments
-    pattern = r"([.\w*]+)\s*\{(?:/\*.*?\*/\s*)*([^\}]+)\}"
+    pattern = r"([.#\w*]+)\s*\{(?:/\*.*?\*/\s*)*([^\}]+)\}"
 
-    # Find all matches of the pattern in the cssContent
+    # Find all matches of the pattern in the CSS code
     matches = re.findall(pattern, code)
 
     # Extract element names and rules into separate arrays
     elementArray = [match[0] for match in matches]
     elementRules = [re.sub(r"/\*.*?\*/", "", match[1]).replace("\n", "").split(";")[:-1] for match in matches]
+
     # Clean up whitespace from the rules
-    elementRules = [sorted([rule.replace(" ", "") for rule in rules if rule.replace(" ", "")]) for rules in elementRules]
-    elementRules = [[rule.replace(":", ": ") for rule in rules] for rules in elementRules]
+    elementRules = [[rule.strip() for rule in rules] for rules in elementRules]
 
-    # if the checkBox is checked sort the element names in alphabetical order
-    if checkState.get():
-        # Zip the two lists together
-        zippedLists = zip(elementArray, elementRules)
-
-        # Sort the zipped list by the first element of each tuple
-        sortedZippedLists = sorted(zippedLists)
-
-        # Unzip the lists
-        elementArray, elementRules = zip(*sortedZippedLists)
-
-    # New CSS structure varaible
-    cssStructure = ""
+    # New CSS structure variable
+    cssStructure = []
 
     # Generate the CSS structure for regular rules
+    cssStructure = ""
     for element, rules in zip(elementArray, elementRules):
-        cssStructure += f"{element}{{\n"
+        cssStructure += f"{element} {{\n"
         for rule in rules:
-            cssStructure += f"    {rule};\n"
+            rule_name, rule_value = rule.split(":")
+            cssStructure += f"    {rule_name.strip()}: {rule_value.strip()};\n"
         cssStructure += "}\n\n"
 
     # Append the sorted at-rules to the end of the CSS structure
@@ -163,7 +154,7 @@ def main():
     root = TkinterDnD.Tk()
     root.configure(bg="black")
     root.title("CSS Prettify")
-    root.iconbitmap(r"dist\CSSPrettify\img\cssIcon.ico")
+    # root.iconbitmap(r"dist\CSSPrettify\img\cssIcon.ico")
     root.geometry("500x300")
     root.minsize(500, 300) 
     root.resizable(False, False)

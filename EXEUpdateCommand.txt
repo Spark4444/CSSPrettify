@@ -1,0 +1,1 @@
+python -m PyInstaller --noconsole --add-data "site-packages/pyperclip;pyperclip" --add-data "site-packages/tkinterdnd2;tkinterdnd2" --icon=img\cssIcon.ico CSSPrettify.py
