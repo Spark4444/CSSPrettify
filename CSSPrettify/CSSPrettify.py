@@ -11,6 +11,8 @@ def editCss(code, checkState):
     # Remove all comments from CSS
     cleanedCss = re.sub(r"/\*.*?\*/", "", code, flags=re.DOTALL)
 
+
+    #AT-RULES SELECTION
     # Modified regular expression pattern to match at-rules
     pattern = r"(@[\w-]+[^{]+{[^{}]*}|@[\w-]+[^{]+\{[\s\S]+?\}\s*\})"
 
@@ -24,34 +26,41 @@ def editCss(code, checkState):
     cleanedCss = re.sub(pattern, "", cleanedCss)
 
 
-
     #RULES SELECTION    
-    # Regular expresion to select anything inside { }
+    # Regular expression to select anything inside { }
     curlyBracketsPattern = r"\{([^}]+)\}"
 
     # Find all matches of the pattern in the CSS code
     matches = re.findall(curlyBracketsPattern, cleanedCss)
 
-    # Initialize an empty list to store the rules
-    rules = []
+    # Create an empty list to store the matches
+    matchArray = []
 
-    # Process each match
+    # Append each match to the list
     for match in matches:
-        # Split the match by semicolon to separate ruleName and ruleParameter
-        parts = match.split(";")
-        for part in parts:
-            # Split each part by colon to get ruleName and ruleParameter
-            ruleParts = part.split(":")
-            if len(ruleParts) == 2:
-                ruleName, ruleParameter = ruleParts
-                # Remove any leading/trailing spaces
-                ruleName = ruleName.strip()
-                ruleParameter = ruleParameter.strip()
-                # Append the rule as a list [ruleName, ruleParameter] to the "rules" list
-                rules.append([ruleName, ruleParameter+";"])
+        matchArray.append(match.strip())
 
-    # Sort rules names in alphabetical order
-    sortedRules = sorted(rules, key=lambda x: x[0])
+    # Create an empty list to store the new rules
+    elementRules = []
+    for rule in matchArray:
+        properties = rule.split(';')
+        nestedRule = []
+        for prop in properties:
+            if ':' in prop:
+                name, value = prop.split(':')
+                nestedRule.append([name.strip()+":", value.strip()+";"])
+        # Append the rule [ruleName:, ruleValue;] to the "rule" list while removing any leading/trailing spaces
+        elementRules.append(nestedRule)
+
+    # Sort each 2D array within the 3D array
+    for ruleSet in elementRules:
+        ruleSet.sort(key=lambda x: x[0])
+
+    # Flatten the rules array into a 2d array
+    elementRules = [
+    [f"{rule[0]} {rule[1]}" for rule in ruleArray]
+    for ruleArray in elementRules
+    ]
 
 
     #NAME SELECTION 
@@ -78,26 +87,23 @@ def editCss(code, checkState):
     if checkState.get():
         elementNames = sorted(elementNames)
 
-    print(elementNames)
-    print(rules)
-
+    # New CSS code generation
     # New CSS structure variable
-    # cssStructure = []
+    newCSS = ""
 
-    # Generate the CSS structure for regular rules
-    # cssStructure = ""
-    # for element, rules in zip(elementArray, elementRules):
-    #     cssStructure += f"{element} {{\n"
-    #     for rule in rules:
-    #         rule_name, rule_value = rule.split(":")
-    #         cssStructure += f"    {rule_name.strip()}: {rule_value.strip()};\n"
-    #     cssStructure += "}\n\n"
+    # Generate the new CSS structure by going though the arrays and adding everything into the new CSS structure
+    for index, elementName in enumerate(elementNames):
+        joinedRules = "\n    ".join(elementRules[index])
+        newCSS += f"""{elementName} {{
+    {joinedRules}
+}}
+\n"""
 
     # Append the sorted at-rules to the end of the CSS structure
-    # for atRule in sortedAtRules:
-    #     cssStructure += f"{atRule}\n\n"
+    for atRule in sortedAtRules:
+        newCSS += f"{atRule}\n\n"
 
-    # return cssStructure
+    return newCSS
 
 # Function for opening a CSS files and then editing it
 def openCssFile(checkState, text3, entry2):
@@ -113,7 +119,7 @@ def openCssFile(checkState, text3, entry2):
         # Save the new CSS file in the same directory with an "Edited" added at the end
         newFilename = f"{os.path.splitext(filePath)[0]}Edited.css"
         with open(newFilename, "w") as file:
-            # file.write(cssStructure)
+            file.write(cssStructure)
             text3.config(text="Edited CSS file saved to:")
             text3.place(anchor="s", relx=0.5, rely=0.95)
             entry2.config(state="normal")
