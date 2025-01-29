@@ -1,8 +1,7 @@
 # CSS Prettify
 
 This app sorts `CSS` code in alphabetical order to make it look pretty.
-After choosing the `CSS` code using the button or copying it into entry, it will edit it and save it into the same directory with `Edited` added to the file name or copy it into your clipboard. If you don't need the `CSSPretify.py` file you can delete it after downloading the project, it's not needed for the `CSSPretify.exe` to work.
-Also i can't fix it, but this prettiefier removes all comments from your `CSS` after editing it.
+After choosing the `CSS` code using the button or copying it into entry, it will edit it and save it into the same directory with `Edited` added to the file name or it will copy it into your clipboard. You only need the CSSPrettifyEXE folder for executable to work everything else you can delete. Also i can't fix it, but this prettiefier removes all comments from your `CSS` after editing it.
 
 ## Instalation
 
@@ -66,7 +65,7 @@ element4{
 
 ## Usage
 
-* To open the app, open the `CSSPretiyfy.exe` executable located in `CSSPretyify/dist/CSSPrettify/`
+* To open the app, open the `CSSPretiyfy.exe` executable located in `CSSPretyifyEXE/`
 * `Checkbox Sort element names in alphabetical order` sorts all the element names in alphabetical order if checked, like this:
 
 #### before:

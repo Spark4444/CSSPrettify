@@ -1,6 +1,7 @@
 # Imports
 import os
 import pyperclip
+import tkinterdnd2
 import re
 import tkinter as tk
 from tkinter import filedialog, font
@@ -73,27 +74,31 @@ def editCss(code, checkState):
 
     # Select all the content outside of the curly braces
     for char in cleanedCss:
-        if char == "{":
+        if (char == "{"):
             insideBraces = True
-        elif char == "}":
+        elif (char == "}"):
             insideBraces = False
-            if currentWord:
+            if (currentWord):
                 # Append the element name [elementName] to the "elementNames" list while removing any leading/trailing spaces
                 elementNames.append(currentWord.strip())
             currentWord = ""
-        elif not insideBraces:
+        elif (not insideBraces):
             currentWord += char
 
-    if checkState.get():
-        elementNames = sorted(elementNames)
+    # Create a list of tuples (elementName, elementRules)
+    elements = list(zip(elementNames, elementRules))
+
+    if (checkState.get()):
+        # Sort the list of tuples by element name
+        elements = sorted(elements, key=lambda x: x[0])
 
     # New CSS code generation
     # New CSS structure variable
     newCSS = ""
 
-    # Generate the new CSS structure by going though the arrays and adding everything into the new CSS structure
-    for index, elementName in enumerate(elementNames):
-        joinedRules = "\n    ".join(elementRules[index])
+    # Generate the new CSS structure by going through the sorted elements
+    for (elementName, rules) in elements:
+        joinedRules = "\n    ".join(rules)
         newCSS += f"""{elementName} {{
     {joinedRules}
 }}
@@ -207,7 +212,7 @@ def main():
     root = TkinterDnD.Tk()
     root.configure(bg="black")
     root.title("CSS Prettify")
-    root.iconbitmap(r"CSSPrettify\dist\CSSPrettify\img\cssIcon.ico")
+    root.iconbitmap(r"img\cssIcon.ico")
     root.geometry("500x300")
     root.minsize(500, 300) 
     root.resizable(False, False)
