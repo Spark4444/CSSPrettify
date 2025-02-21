@@ -11,8 +11,8 @@ After choosing the `CSS` code using the button or copying it into entry, it will
 ### &nbsp;&nbsp;&nbsp;Or
 
 Use the git clone command to copy it onto your computer
-```
-bash git clone https://github.com/Spark4444/CSSPrettify
+```bash
+git clone https://github.com/Spark4444/FandomAdBlocker
 ```
 
 ## Usage examples
